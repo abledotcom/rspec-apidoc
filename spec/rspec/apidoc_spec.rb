@@ -15,7 +15,7 @@ RSpec.describe RSpec::Apidoc do
 
   it { expect(File.exist?(formatter.template_path)).to eq(true) }
 
-  it { expect(formatter.output_filename).to end_with('api.html') }
+  it { expect(formatter.output_filename).to be_a(Tempfile) }
 
   it { expect(formatter.host).to eq('https://api.YOUR.APP') }
 
@@ -37,24 +37,26 @@ RSpec.describe RSpec::Apidoc do
     end
   end
 
-  it do
-    formatter.close(nil)
-    doc = File.read(formatter.output_filename)
+  describe 'with the generated doc' do
+    it do
+      formatter.close(nil)
+      doc = formatter.output_filename.read
 
-    expect(doc).to include(formatter.title)
-    expect(doc).to include(formatter.description)
-    expect(doc).to include(formatter.host)
-    expect(doc).to include('https://api.YOUR.APP/lobster/?q=ok')
-    expect(doc).to include('https://api.YOUR.APP/test')
-    expect(doc).to include('-X POST')
-    expect(doc).to include('-X GET')
-    expect(doc).to include('Index docstring')
-    expect(doc).to include(
-      'RSpec::Apidoc with a Rack app with Rails is expected to eq'
-    )
-    expect(doc).to include('Content-Type: application/x-www-form-urlencoded')
-    expect(doc).to include(
-      'RSpec::Apidoc with a Rack app is expected to include "Lobstericious"'
-    )
+      expect(doc).to include(formatter.title)
+      expect(doc).to include(formatter.description)
+      expect(doc).to include(formatter.host)
+      expect(doc).to include('https://api.YOUR.APP/lobster/?q=ok')
+      expect(doc).to include('https://api.YOUR.APP/test')
+      expect(doc).to include('-X POST')
+      expect(doc).to include('-X GET')
+      expect(doc).to include('Index docstring')
+      expect(doc).to include(
+        'RSpec::Apidoc with a Rack app with Rails is expected to eq'
+      )
+      expect(doc).to include('Content-Type: application/x-www-form-urlencoded')
+      expect(doc).to include(
+        'RSpec::Apidoc with a Rack app is expected to include "Lobstericious"'
+      )
+    end
   end
 end

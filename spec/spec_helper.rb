@@ -41,14 +41,14 @@ require 'rspec/apidoc'
 # Apidoc config...
 RSpec.configure do |config|
   config.add_formatter(RSpec::Apidoc)
-  config.add_formatter(:progress)
+  config.add_formatter(:doc)
 
   config.apidoc_title = 'YOUR.APP API Documentation'
   config.apidoc_description = 'YOUR.APP long description'
 
   config.apidoc_host = 'https://api.YOUR.APP'
   config.apidoc_output_filename = 'api.html'
-  config.apidoc_output_filename = File.expand_path('api.html', __dir__)
+  config.apidoc_output_filename = Tempfile.new
 
   config.after(:each, apidoc: true) do |example|
     RSpec::Apidoc.add(self, example)
