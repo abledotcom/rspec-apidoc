@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <style>
+      html { font-family: sans-serif; }
+      .header {
+        border-bottom: 1px solid #EEE;
+        padding: 30px;
+        text-transform: uppercase;
+        font-size: 250%;
+        font-weight: bold;
+      }
+      .footer { padding: 60px; border-top: 1px solid #EEE; color: #CCC; }
+      #examples { display: flex; }
+      #toc {
+        border-right: 1px solid #EEE;
+        text-transform: uppercase;
+        max-width: 30%;
+      }
+      #toc ul { list-style-type:none; margin: 0; padding: 0; }
+      #toc li a, #toc li span {
+        display: block;
+        padding: 30px;
+        border-bottom: 1px solid #EEE;
+      }
+      #toc li span { font-weight: bold; color: #555; }
+      #docs { width: 100%; max-width: 70%; }
+      pre {
+        background: #444;
+        color: #CCC;
+        padding: 20px;
+        margin-top: 0;
+        white-space: pre-wrap;
+        overflow: auto;
+      }
+      .example-doc {
+        border-bottom: 1px solid #DDD;
+        padding-bottom: 30px;
+        margin-bottom: 30px;
+      }
+      .example { padding: 30px 60px; }
+      .example:nth-child(even) { background: #EEE; }
+      .request-response { display: flex; justify-content: space-between; }
+      .request, .response { width: 45%; }
+      .request span, .response span {
+        padding: 10px;
+        background: #CCC;
+        color: #333;
+        font-weight: bold;
+        border-radius: 10px 10px 0 0;
+        text-transform: uppercase;
+        font-size: 70%;
+        display: block;
+      }
+      .arrow-up { font-weight: bold; font-size: 150%; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <span><%= title %></span>
+    </div>
+
+    <div id="examples">
+      <div id="toc">
+        <ul>
+          <li><a href="#examples">Home</a></li>
+          <% examples.each do |controller, items| %>
+            <li>
+              <span><%= controller %></span>
+              <ul>
+                <% items.keys.sort.each do |action| %>
+                  <li>
+                    <a href="#<%= controller %>-<%= action %>">
+                      <%= action %>
+                    </a>
+                  </li>
+                <% end %>
+              </ul>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <div id="docs">
+        <div class="example">
+          <h1><%= title %></h1>
+          <%= description %>
+        </div>
+
+        <% examples.each do |controller, items| %>
+          <% items.sort.each do |action, action_items| %>
+            <% action_items.each_with_index do |item, index| %>
+              <div class="example">
+                <% if index == 0 %>
+                  <div class="example-doc" id="<%= controller %>-<%= action %>">
+                    <%= item[:action_comment] || ( item[:method] + ' ' + controller ) %>
+                  </div>
+                <% end %>
+
+                <p><%= item[:description] %></>
+                <div class="request-response">
+                  <div class="request">
+                    <span>Request</span>
+                    <pre>
+$ curl '<%= host %><%= item[:path] %><%= ('?' + item[:query]) if item[:query] != '' %>' \
+  -X <%= item[:method] %> \
+  -H 'Content-Type: <%= item[:content_type] %>' <% if item[:request_body] != '' %> \
+  @- &lt;&lt; EOF
+<%=h JSON.pretty_generate(item[:request_body]) %>
+EOF
+        <% end %>
+                    </pre>
+                  </div>
+                  <div class="response">
+                    <span>Response</span>
+                    <pre>
+&lt; Content-Type: <%= item[:response_content_type] %>
+&lt; Status: <%= item[:status] %>
+<%=h JSON.pretty_generate(item[:response_body]) %>
+                    </pre>
+                  </div>
+                </div>
+
+                <p>
+                  <a class=".arrow-up" href="#examples">&#11205;</a>
+                </p>
+              </div>
+
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div class="footer">
+      &copy; <%= Date.current.year %> <%= title %>
+    </div>
+  </body>
+</html>
