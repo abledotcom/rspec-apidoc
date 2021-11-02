@@ -48,6 +48,7 @@ RSpec.configure do |config|
 
   config.apidoc_host = 'https://api.YOUR.APP'
   config.apidoc_output_filename = 'api.html'
+  config.apidoc_output_filename = File.expand_path('api.html', __dir__)
 
   config.after(:each, apidoc: true) do |example|
     RSpec::Apidoc.add(self, example)

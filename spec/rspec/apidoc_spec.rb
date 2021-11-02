@@ -15,7 +15,7 @@ RSpec.describe RSpec::Apidoc do
 
   it { expect(File.exist?(formatter.template_path)).to eq(true) }
 
-  it { expect(formatter.output_filename).to eq('api.html') }
+  it { expect(formatter.output_filename).to end_with('api.html') }
 
   it { expect(formatter.host).to eq('https://api.YOUR.APP') }
 
