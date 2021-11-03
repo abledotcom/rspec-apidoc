@@ -90,9 +90,13 @@
         </div>
 
         <% examples.each do |controller, items| %>
-          <% items.sort.each do |action, action_items| %>
+          <% items.sort.each_with_index do |(action, action_items), mindex| %>
             <% action_items.each_with_index do |item, index| %>
               <div class="example">
+                <% if mindex == 0 %>
+                  <%= item[:controller_comment] %>
+                <% end %>
+
                 <% if index == 0 %>
                   <div class="example-doc" id="<%= controller %>-<%= action %>">
                     <%= item[:action_comment] || ( item[:method] + ' ' + controller ) %>

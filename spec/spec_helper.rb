@@ -13,6 +13,7 @@ require 'rack/lobster'
 require 'rails'
 require 'action_controller/railtie'
 
+# Test controller docstring
 class TestController < ActionController::Base
   # Index docstring
   #
@@ -47,7 +48,6 @@ RSpec.configure do |config|
   config.apidoc_description = 'YOUR.APP long description'
 
   config.apidoc_host = 'https://api.YOUR.APP'
-  config.apidoc_output_filename = 'api.html'
   config.apidoc_output_filename = Tempfile.new
 
   config.after(:each, apidoc: true) do |example|

@@ -82,15 +82,21 @@ module RSpec
       response_body = parse_json_safely(spec.response.body)
 
       if spec.request.controller_instance
-        action_comment = spec.request.controller_class.instance_method(
-          spec.request.controller_instance.action_name
-        ).comment
-        # Remove any `@param` or `@return` lines
-        action_comment = action_comment.delete('#').gsub(/@.*$/, '').strip
-        controller_class = spec.request.controller_class
         action_name = spec.request.controller_instance.action_name
+        action_method = spec.request.controller_instance.method(action_name)
+        # Remove any `@param` or `@return` lines
+        action_comment = \
+          action_method.comment.gsub('# ', '').gsub(/@.*$/, '').strip
+        controller_class = spec.request.controller_class
+        controller_comment = nil
+
+        if action_method.respond_to?(:class_comment)
+          controller_comment = \
+            action_method.class_comment.gsub('# ', '').gsub(/@.*$/, '').strip
+        end
       else
         action_comment = nil
+        controller_comment = nil
         controller_class = spec.request.path
         action_name = spec.request.method
       end
@@ -99,6 +105,7 @@ module RSpec
         description: example.metadata[:full_description],
 
         controller_class: controller_class,
+        controller_comment: controller_comment,
         action_name: action_name,
         action_comment: action_comment,
 
