@@ -112,7 +112,11 @@ $ curl '<%= host %><%= item[:path] %><%= ('?' + item[:query]) if item[:query] !=
   -X <%= item[:method] %> \
   -H 'Content-Type: <%= item[:content_type] %>' <% if item[:request_body] != '' %> \
   @- &lt;&lt; EOF
+<% if item[:request_body].is_a?(String) %>
+<%=h item[:request_body] %>
+<% else %>
 <%=h JSON.pretty_generate(item[:request_body]) %>
+<% end %>
 EOF
         <% end %>
                     </pre>
@@ -122,7 +126,12 @@ EOF
                     <pre>
 &lt; Content-Type: <%= item[:response_content_type] %>
 &lt; Status: <%= item[:status] %>
+
+<% if item[:response_body].is_a?(String) %>
+<%=h item[:response_body] %>
+<% else %>
 <%=h JSON.pretty_generate(item[:response_body]) %>
+<% end %>
                     </pre>
                   </div>
                 </div>

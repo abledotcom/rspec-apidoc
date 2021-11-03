@@ -86,13 +86,14 @@ module RSpec
         action_method = spec.request.controller_instance.method(action_name)
         # Remove any `@param` or `@return` lines
         action_comment = \
-          action_method.comment.gsub('# ', '').gsub(/@.*$/, '').strip
+          action_method.comment.gsub(/^#\s?/, '').strip.gsub(/^@.*$/, '').strip
         controller_class = spec.request.controller_class
         controller_comment = nil
 
         if action_method.respond_to?(:class_comment)
-          controller_comment = \
-            action_method.class_comment.gsub('# ', '').gsub(/@.*$/, '').strip
+          controller_comment = action_method.class_comment.gsub(
+            /.*frozen_string_literal:.*/, ''
+          ).strip.gsub(/^#\s?/, '').strip.gsub(/^@.*$/, '')
         end
       else
         action_comment = nil
