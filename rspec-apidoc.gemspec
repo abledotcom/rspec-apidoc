@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = 'rspec-apidoc'
-  spec.version       = '0.1.1'
+  spec.version       = '0.1.2'
   spec.authors       = ['Stas Suscov']
   spec.email         = ['stas@nerd.ro']
 
