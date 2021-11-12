@@ -20,6 +20,9 @@ Style/FrozenStringLiteralComment:
 Layout/LineLength:
   Max: 80
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 RSpec/MultipleExpectations:
   Enabled: false
 
