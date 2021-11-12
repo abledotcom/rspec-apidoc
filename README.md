@@ -47,11 +47,16 @@ RSpec.configure do |config|
 
   config.apidoc_title = 'YOUR.APP API Documentation'
   config.apidoc_description = \
-    'A longer intro to add before the examples: authtication, status codes...'
+    'A longer intro to add before the examples: authentication, status codes...'
 
   config.apidoc_host = 'https://api.YOUR.APP'
   # Optionally specify the output file path.
   config.apidoc_output_filename = 'apidoc.html'
+
+  # Customize the authentication header
+  config.apidoc_auth_header = lambda do |headers|
+    '"Authorization: Bearer $AUTH_TOKEN"' if headers['Authorization']
+  end
 
   # You can add it to any example based on the metadata.
   config.after(:each, type: :request) do |example|

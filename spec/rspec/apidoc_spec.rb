@@ -30,7 +30,11 @@ RSpec.describe RSpec::Apidoc do
     end
 
     it do
-      get('/lobster', params: { q: :ok })
+      get(
+        '/lobster',
+        params: { q: :ok },
+        headers: { Authorization: 'Bearer _' }
+      )
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('Lobstericious')

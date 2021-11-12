@@ -92,12 +92,12 @@
         <% examples.each do |controller, items| %>
           <% items.sort.each_with_index do |(action, action_items), mindex| %>
             <% action_items.each_with_index do |item, index| %>
-              <div class="example">
+              <div class="example" id="<%= controller %>-<%= action %>-<%= mindex + index %>">
                 <% if mindex == 0 %>
                   <%= item[:controller_comment] %>
                 <% end %>
 
-                <% if index == 0 %>
+                <% if mindex == 0 && index == 0 %>
                   <div class="example-doc" id="<%= controller %>-<%= action %>">
                     <%= item[:action_comment] || ( item[:method] + ' ' + controller ) %>
                   </div>
@@ -108,15 +108,20 @@
                   <div class="request">
                     <span>Request</span>
                     <pre>
-$ curl '<%= host %><%= item[:path] %><%= ('?' + item[:query]) if item[:query] != '' %>' \
-  -X <%= item[:method] %> \
-  -H 'Content-Type: <%= item[:content_type] %>' <% if item[:request_body] != '' %> \
-  @- &lt;&lt; EOF
-<% if item[:request_body].is_a?(String) %>
-<%=h item[:request_body] %>
+$ curl -X <%= item[:method] %> '<%= host %><%= item[:path] %><%= ('?' + item[:query]) if item[:query] != '' %>' \
+<%- if item[:auth_header] -%>
+  -H <%= item[:auth_header] %> <%- if item[:content_type] %>\<% end %>
+<%- end -%>
+<%- if item[:content_type] -%>
+  -H 'Content-Type: <%= item[:content_type] %>'  <%- if item[:request_body] %>\<% end %>
+<%- end -%>
+<%- if item[:request_body] != '' -%>
+  -d - &lt;&lt; EOF
+<% if item[:request_body].is_a?(String) -%>
+<%=h item[:request_body] -%>
 <% else %>
 <%=h JSON.pretty_generate(item[:request_body]) %>
-<% end %>
+<%- end %>
 EOF
         <% end %>
                     </pre>
@@ -124,14 +129,14 @@ EOF
                   <div class="response">
                     <span>Response</span>
                     <pre>
-&lt; Content-Type: <%= item[:response_content_type] %>
+&lt; Content-Type: <%= item[:response_content_type] -%>
 &lt; Status: <%= item[:status] %>
 
-<% if item[:response_body].is_a?(String) %>
-<%=h item[:response_body] %>
+<% if item[:response_body].is_a?(String) -%>
+<%=h item[:response_body] -%>
 <% else %>
-<%=h JSON.pretty_generate(item[:response_body]) %>
-<% end %>
+<%=h JSON.pretty_generate(item[:response_body]) -%>
+<%- end -%>
                     </pre>
                   </div>
                 </div>
@@ -148,6 +153,9 @@ EOF
     </div>
     <div class="footer">
       &copy; <%= Date.current.year %> <%= title %>
+      <p>
+        <small>Latest update at <%= DateTime.current.to_s %></small>
+      </p>
     </div>
   </body>
 </html>

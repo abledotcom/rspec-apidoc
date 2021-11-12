@@ -13,6 +13,7 @@ module RSpec
     config.add_setting(:apidoc_title)
     config.add_setting(:apidoc_description)
     config.add_setting(:apidoc_host)
+    config.add_setting(:apidoc_auth_header, default: ->(headers) {})
     config.add_setting(
       :apidoc_template_path,
       default: File.expand_path('apidoc/static/template.html.erb', __dir__)
@@ -65,6 +66,14 @@ module RSpec
       RSpec.configuration.apidoc_host
     end
 
+    # Returns the API authentication header callback result
+    #
+    # @param headers [ActionDispatch::Http::Headers] object
+    # @return [Object]
+    def self.auth_header(headers)
+      RSpec.configuration.apidoc_auth_header.call(headers)
+    end
+
     # Returns the collected examples, sorted
     #
     # @return [Array] a list of [Hash] items
@@ -111,6 +120,7 @@ module RSpec
         action_comment: action_comment,
 
         content_type: spec.request.content_type,
+        auth_header: auth_header(spec.request.headers),
         method: spec.request.method,
         path: spec.request.path,
         query: spec.request.query_parameters.to_param,
@@ -153,7 +163,7 @@ module RSpec
     def close(_notification)
       return if examples.empty?
 
-      erb = ERB.new(File.read(template_path))
+      erb = ERB.new(File.read(template_path), trim_mode: '-')
       File.write(output_filename, erb.result(self.binding))
     end
   end

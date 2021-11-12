@@ -50,6 +50,10 @@ RSpec.configure do |config|
   config.apidoc_host = 'https://api.YOUR.APP'
   config.apidoc_output_filename = Tempfile.new
 
+  config.apidoc_auth_header = lambda do |headers|
+    '"Authorization: Bearer $AUTH_TOKEN"' if headers['Authorization']
+  end
+
   config.after(:each, apidoc: true) do |example|
     RSpec::Apidoc.add(self, example)
   end
