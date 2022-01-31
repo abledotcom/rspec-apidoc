@@ -119,7 +119,7 @@ module RSpec
         action_name: action_name,
         action_comment: action_comment,
 
-        content_type: spec.request.content_type,
+        content_type: spec.request.media_type,
         auth_header: auth_header(spec.request.headers),
         method: spec.request.method,
         path: spec.request.path,
@@ -127,7 +127,7 @@ module RSpec
         request_body: request_body,
 
         status: spec.response.status,
-        response_content_type: spec.response.content_type,
+        response_content_type: spec.response.media_type,
         response_body: response_body
       }
     end
